@@ -2,7 +2,7 @@
 操作系统-GUI平台实现组-后端
 
 - Python3 · Django 1.10
-- 好像还没有什么复杂的数据库操作，所以先用sqlite做数据库
+- 用MySQL做数据库
 - 开发环境：Linux(Ubuntu) + PyCharm
 - [doc](doc/README.md)目录里是一些重要的文档
 - app is legoc，意为 乐高积木般组合的C代码
