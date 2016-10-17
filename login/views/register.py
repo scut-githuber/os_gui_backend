@@ -2,13 +2,15 @@ from django.views.generic import View
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.shortcuts import Http404
 import json
 
 
 class RegisterView(View):
     def get(self, request):
-        raise Http404()
+        result = {}
+        result['err'] = '0'
+        result['csrftoken'] = get_token(request)
+        return JsonResponse(result)
 
     def post(self, request):
         try:
@@ -20,15 +22,16 @@ class RegisterView(View):
             email = received_json_data['_email']
 
             if User.objects.filter(username=username).exists():
-                result['status'] = 'fail'
-                result['reason'] = 'username_registered'
+                result['err'] = '-1'
+                result['msg'] = 'username_registered'
                 return JsonResponse(result)
 
             user = User.objects.create_user(
                 username=username, password=password, email=email)
             user.save()
-            result['status'] = 'success'
+            result['err'] = '1'
         except Exception as e:
-            result['status'] = 'fail'
-            result['reason'] = str(e)
+            result['err'] = '-3'
+            # result['reason'] = str(e)
+            result['msg'] = "sql_exception"
         return JsonResponse(result)

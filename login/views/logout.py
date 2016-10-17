@@ -9,10 +9,9 @@ class LogoutView(LoginRequiredMixin, View):
         try:
             result = {}
             logout(request)
-            result['status'] = 'success'
+            result['err'] = '1'
         except Exception as e:
-            result['status'] = 'fail'
-            result['reason'] = str(e)
+            result['err'] = '-3'
+            # result['reason'] = str(e)
+            result['msg'] = "sql_exception"
         return JsonResponse(result)
-    def post(self, request):
-    	raise Http404()

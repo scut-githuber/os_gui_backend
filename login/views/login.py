@@ -2,13 +2,18 @@ from django.views.generic import View
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from django.shortcuts import Http404
 import json
 
 
 class LoginView(View):
     def get(self, request):
-        raise Http404()
+        result = {}
+        if request.user.is_authenticated():
+            result['err'] = '2'
+        else:
+            result['err'] = '0'
+            result['csrftoken'] = get_token(request)
+        return JsonResponse(result)
 
     def post(self, request):
         try:
@@ -20,15 +25,15 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    result['status'] = 'success'
-                    result['csrftoken'] = get_token(request)
+                    result['err'] = '1'
                 else:
-                    result['status'] = 'fail'
-                    result['reason'] = 'account_disabled'
+                    result['err'] = '-1'
+                    result['msg'] = 'account_disabled'
             else:
-                result['status'] = 'fail'
-                result['reason'] = 'wrong_password'
+                result['err'] = '-2'
+                result['msg'] = 'wrong_password'
         except Exception as e:
-            result['status'] = 'fail'
-            result['reason'] = str(e)
+            result['err'] = '-3'
+            # result['reason'] = str(e)
+            result['msg'] = "sql_exception"
         return JsonResponse(result)
