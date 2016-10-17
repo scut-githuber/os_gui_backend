@@ -18,4 +18,4 @@
 
 - 前后端交互数据使用JSON
 
-- 接口见wiki
+- 接口见[wiki](https://github.com/scut-githuber/os_gui_backend/wiki)
