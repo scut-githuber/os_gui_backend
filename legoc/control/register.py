@@ -5,13 +5,13 @@ import json
 
 
 class RegisterCtrl():
-    def pre_register(self, request):
+    def pre_register(request):
         result = {}
         result['err'] = '0'
         result['csrftoken'] = get_token(request)
         return JsonResponse(result)
 
-    def register(self, request):
+    def register(request):
         try:
             result = {}
 

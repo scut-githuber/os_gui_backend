@@ -5,7 +5,7 @@ import json
 
 
 class LoginCtrl():
-    def pre_login(self, request):
+    def pre_login(request):
         result = {}
         if request.user.is_authenticated():
             result['err'] = '2'
@@ -14,7 +14,7 @@ class LoginCtrl():
             result['csrftoken'] = get_token(request)
         return JsonResponse(result)
 
-    def login(self, request):
+    def login(request):
         try:
             result = {}
             received_json_data = json.loads(request.body.decode("utf-8"))

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 
 
 class LogoutCtrl():
-    def logout(self, request):
+    def logout(request):
         try:
             result = {}
             logout(request)
