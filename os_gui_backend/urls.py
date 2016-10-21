@@ -18,6 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'', include('legoc.urls', namespace="legoc")),
-    url(r'^login/', include('login.urls', namespace="login")),
+    url(r'^', include('legoc.urls', namespace="legoc")),
 ]

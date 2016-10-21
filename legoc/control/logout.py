@@ -1,11 +1,9 @@
-from django.views.generic import View
 from django.contrib.auth import logout
 from django.http import JsonResponse
-from .loginrequired import LoginRequiredMixin
 
 
-class LogoutView(LoginRequiredMixin, View):
-    def get(self, request):
+class LogoutCtrl():
+    def logout(self, request):
         try:
             result = {}
             logout(request)

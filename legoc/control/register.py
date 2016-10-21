@@ -1,18 +1,17 @@
-from django.views.generic import View
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 import json
 
 
-class RegisterView(View):
-    def get(self, request):
+class RegisterCtrl():
+    def pre_register(self, request):
         result = {}
         result['err'] = '0'
         result['csrftoken'] = get_token(request)
         return JsonResponse(result)
 
-    def post(self, request):
+    def register(self, request):
         try:
             result = {}
 

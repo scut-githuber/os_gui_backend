@@ -1,12 +1,11 @@
-from django.views.generic import View
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 import json
 
 
-class LoginView(View):
-    def get(self, request):
+class LoginCtrl():
+    def pre_login(self, request):
         result = {}
         if request.user.is_authenticated():
             result['err'] = '2'
@@ -15,7 +14,7 @@ class LoginView(View):
             result['csrftoken'] = get_token(request)
         return JsonResponse(result)
 
-    def post(self, request):
+    def login(self, request):
         try:
             result = {}
             received_json_data = json.loads(request.body.decode("utf-8"))
