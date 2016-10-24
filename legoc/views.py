@@ -13,9 +13,8 @@ from legoc.util import json_helper
 
 
 @csrf_exempt
-def node_child(request):
+def node_child(request, node_id):
     """获取用例子结点信息"""
-    node_id = request.GET['Node_id']
     node_list = child(node_id)
     if node_list is not None:
         return HttpResponse(json_helper.dumps_err(0, node_list))
@@ -24,9 +23,8 @@ def node_child(request):
 
 
 @csrf_exempt
-def node_brother(request):
+def node_brother(request, node_id):
     """获取用例兄弟结点信息，默认传入的都是左结点"""
-    node_id = request.GET['Node_id']
     node_list = brother(node_id)
     if node_list is not None:
         return HttpResponse(json_helper.dumps_err(0, node_list))
@@ -35,9 +33,8 @@ def node_brother(request):
 
 
 @csrf_exempt
-def node_parent(request):
+def node_parent(request, node_id):
     """获取用例父母结点信息"""
-    node_id = request.GET['Node_id']
     node_list = parent(node_id)
     if node_list is not None:
         return HttpResponse(json_helper.dumps_err(0, node_list))
