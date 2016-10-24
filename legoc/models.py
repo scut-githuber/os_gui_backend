@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -10,18 +10,18 @@ class LGNode(models.Model):
     name = models.CharField(max_length=50)
     desp = models.CharField(max_length=200, default='')
 
-
-class LGUser(models.Model):
-    name = models.CharField(max_length=100)
-    mail = models.CharField(max_length=100)
-    # 前端 hash 后的密码
-    pwd = models.CharField(max_length=200)
+# joyxee:使用django的user模块实现登录注册
+# class LGUser(models.Model):
+#     name = models.CharField(max_length=100)
+#     mail = models.CharField(max_length=100)
+#     # 前端 hash 后的密码
+#     pwd = models.CharField(max_length=200)
 
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
     root_node = models.ForeignKey(LGNode)
-    user = models.ForeignKey(LGUser)
+    user = models.ForeignKey(User)
     # 持久化存储project对应的树结构
     pickle_path = models.CharField(max_length=200)
 
