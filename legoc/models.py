@@ -9,6 +9,7 @@ class LGNode(models.Model):
     # 存储xml转换而成的节点，是相对不变的一部分数据，对应xml里每个tag，简单的tag的desp字段可以为空
     name = models.CharField(max_length=50)
     desp = models.CharField(max_length=200, default='')
+    code_path = models.CharField(max_length=300, default='')
 
 
 class LGUser(models.Model):
