@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from legoc.models import LGNode, NodeRef
 
 
@@ -39,3 +41,9 @@ def parent(id):
         })
     return parents
 
+
+def ref_valid(id1, id2, ref):
+    ref_cnt = NodeRef.objects.filter(
+        node_left=get_object_or_404(LGNode, id1), node_right=get_object_or_404(LGNode, id2), ref=ref
+    ).count()
+    return ref_cnt >= 1

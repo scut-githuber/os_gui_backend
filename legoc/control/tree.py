@@ -1,8 +1,18 @@
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
+from legoc.control import node
+from legoc.models import Project, ProjectNodes
 from legoc.util.data import pickle_save, pickle_load
 
 
 class LGTree(object):
     def __init__(self, node_id, lg_node_id):
+        """
+        generate a lgtree
+        :param node_id: id on tree, generated one by one
+        :param lg_node_id: id of lg node, the type of node, different node on the tree may have the same lg node value
+        """
         self.node_id = node_id
         self.data = lg_node_id
         self.parent = None
@@ -40,6 +50,59 @@ class LGTree(object):
     def save(self):
         # if exist, clean, rec save child
         pickle_save(self.store_path, self)
+
+
+def find(tree, node_id):
+    if tree.data == node_id:
+        return tree
+    if tree is not None:
+        ret = None
+        for t in tree.children:
+            ret = find(t, node_id)
+            if ret is not None:
+                break
+        return ret
+
+trees = list()
+
+
+def new_project(name, root_type, user_id):
+    node_cnt = ProjectNodes.objects.all().count()
+    tree = LGTree(node_cnt, root_type)
+    trees.append(tree)
+    project = Project(name=name, root_id=tree.node_id, user=get_object_or_404(User, user_id),
+                      pickle_path=tree.store_path).save()
+    root_node = ProjectNodes(project=project, id_on_tree=tree.node_id, node_type=root_type)
+    root_node.save()
+    return {'project_id': project.id, 'root_id': root_node.id}
+
+
+def new_node(root_id, node_type):
+    project = Project.objects.filter(root_id=root_id).first()
+    node_cnt = ProjectNodes.objects.all().count()
+    project_node = ProjectNodes(project=project, id_on_tree=node_cnt, node_type=node_type)
+    return project_node.id
+
+
+def node_join(node_a, node_b, ref_type):
+    if ref_type == 0:
+        # a is b's child
+        if node_a not in node_b.children:
+            node_b.children.append(node_a)
+    elif ref_type == 1:
+        # a is b's left brother
+        if node_a not in node_b.parent.children:
+            b_level_nodes = node_b.parent.children
+            b_level_nodes.insert(b_level_nodes.index(node_b), node_a)
+
+
+def ref_valid(node_id_a, node_id_b, ref_type):
+    node_a = ProjectNodes.objects.filter(id_on_tree=node_id_a).first()
+    node_type_a = node_a.node_type
+    node_b = ProjectNodes.objects.filter(id_on_tree=node_id_b).first()
+    node_type_b = node_b.node_type
+    return node.ref_valid(node_type_a, node_type_b, ref_type), node_a, node_b
+
 
 if __name__ == '__main__':
     root = LGTree(0, 0)

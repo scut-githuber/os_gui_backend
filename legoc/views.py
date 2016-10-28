@@ -4,7 +4,8 @@ from django.shortcuts import render
 # Create your views here
 from django.views.decorators.csrf import csrf_exempt
 
-from legoc.control.node import child, brother, parent
+from legoc.control import tree
+from legoc.control.node import child, brother, parent, ref_valid
 from legoc.control.login import LoginCtrl
 from legoc.control.logout import LogoutCtrl
 from legoc.control.register import RegisterCtrl
@@ -41,6 +42,28 @@ def node_parent(request, node_id):
     else:
         return HttpResponse(json_helper.dump_err_msg(-1, '返回错误'))
 
+
+@csrf_exempt
+def node_connect(request, node_id_a, node_id_b, ref_type):
+    ret, node_a, node_b = tree.ref_valid(node_id_a, node_id_b, ref_type)
+    if ret:
+        tree.node_join(node_a, node_b, ref_type)
+        return HttpResponse(json_helper.dump_err_msg(0, 'success'))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(-1, 'not exist or unable to connect'))
+
+
+@csrf_exempt
+def create_node(request, root_id, node_type):
+    ret = tree.new_node(root_id, node_type)
+    return HttpResponse(json_helper.dump_err_msg(0, ret))
+
+
+@csrf_exempt
+def new_project(request, name, root_type, user_id):
+    # 返回project id和根节点id
+    ret = tree.new_project(name, root_type, user_id)
+    return HttpResponse(json_helper.dump_err_msg(0, ret))
 
 
 def login(request):

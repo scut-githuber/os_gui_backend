@@ -21,7 +21,8 @@ class LGNode(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
-    root_node = models.ForeignKey(LGNode)
+    # 对应树的根节点id
+    root_id = models.IntegerField(default=0)
     user = models.ForeignKey(User)
     # 持久化存储project对应的树结构
     pickle_path = models.CharField(max_length=200)
@@ -36,3 +37,9 @@ class NodeRef(models.Model):
     # 1， L is R's left brother
     # 为了节省存储空间，不增加parent 和 right brother这两种关系
     ref = models.IntegerField()
+
+
+class ProjectNodes(models.Model):
+    project = models.ForeignKey(Project, related_name='belong_project')
+    node_type = models.IntegerField(default=0)
+    id_on_tree = models.IntegerField(default=0)
