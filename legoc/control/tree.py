@@ -63,7 +63,12 @@ def find(tree, node_id):
                 break
         return ret
 
+
 trees = list()
+
+
+def get_tree(root_id):
+    return filter(lambda x: x.node_id == root_id, trees)[0]
 
 
 def new_project(name, root_type, user_id):
@@ -85,15 +90,18 @@ def new_node(root_id, node_type):
 
 
 def node_join(node_a, node_b, ref_type):
+    tree = get_tree(node_a.project.root_id)[0]
+    tree_node_a = find(tree, node_a.id_on_tree)
+    tree_node_b = find(tree, node_b.id_on_tree)
     if ref_type == 0:
         # a is b's child
-        if node_a not in node_b.children:
-            node_b.children.append(node_a)
+        if tree_node_a not in tree_node_b.children:
+            tree_node_b.children.append(tree_node_a)
     elif ref_type == 1:
         # a is b's left brother
-        if node_a not in node_b.parent.children:
-            b_level_nodes = node_b.parent.children
-            b_level_nodes.insert(b_level_nodes.index(node_b), node_a)
+        if tree_node_a not in tree_node_b.parent.children:
+            b_level_nodes = tree_node_b.parent.children
+            b_level_nodes.insert(b_level_nodes.index(tree_node_b), tree_node_a)
 
 
 def ref_valid(node_id_a, node_id_b, ref_type):
