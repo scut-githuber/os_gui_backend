@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from legoc.models import LGNode, NodeRef
+import xmltodict
 
 
 def child(id):
@@ -47,3 +48,12 @@ def ref_valid(id1, id2, ref):
         node_left=get_object_or_404(LGNode, id1), node_right=get_object_or_404(LGNode, id2), ref=ref
     ).count()
     return ref_cnt >= 1
+
+def parse_from_xmlfile(filepath):
+    with open(filepath, 'r') as f:
+        s = f.read()
+        return parse_xml(s)
+
+def parse_xml(xmlstr):
+    return xmltodict.parse(xmlstr)
+
