@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 # 不用专门写主键，会自动生成的
 
+
 class LGNode(models.Model):
     # 存储xml转换而成的节点，是相对不变的一部分数据，对应xml里每个tag，简单的tag的desp字段可以为空
     name = models.CharField(max_length=50)

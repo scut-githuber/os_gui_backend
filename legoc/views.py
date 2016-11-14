@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from legoc.control import tree
-from legoc.control.node import child, brother, parent, ref_valid
+from legoc.control.node import child, brother, parent, ref_valid, xmls2nodes
 from legoc.control.login import LoginCtrl
 from legoc.control.logout import LogoutCtrl
 from legoc.control.register import RegisterCtrl
@@ -83,3 +83,8 @@ def register(request):
         return RegisterCtrl.pre_register(request)
     else:
         return RegisterCtrl.register(request)
+
+
+def init_rel(request):
+    xmls2nodes()
+    return HttpResponse('init success')
