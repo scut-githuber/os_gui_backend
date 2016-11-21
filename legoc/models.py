@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 
 # 不用专门写主键，会自动生成的
 
+
 class LGNode(models.Model):
     # 存储xml转换而成的节点，是相对不变的一部分数据，对应xml里每个tag，简单的tag的desp字段可以为空
     name = models.CharField(max_length=50)
     desp = models.CharField(max_length=200, default='')
+    code_path = models.CharField(max_length=300, default='')
 
 # joyxee:使用django的user模块实现登录注册
 # class LGUser(models.Model):
@@ -20,7 +22,8 @@ class LGNode(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
-    root_node = models.ForeignKey(LGNode)
+    # 对应树的根节点id
+    root_id = models.IntegerField(default=0)
     user = models.ForeignKey(User)
     # 持久化存储project对应的树结构
     pickle_path = models.CharField(max_length=200)
@@ -35,3 +38,9 @@ class NodeRef(models.Model):
     # 1， L is R's left brother
     # 为了节省存储空间，不增加parent 和 right brother这两种关系
     ref = models.IntegerField()
+
+
+class ProjectNodes(models.Model):
+    project = models.ForeignKey(Project, related_name='belong_project')
+    node_type = models.IntegerField(default=0)
+    id_on_tree = models.IntegerField(default=0)
