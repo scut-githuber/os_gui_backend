@@ -88,6 +88,19 @@ def new_node(root_id, node_type):
     project_node = ProjectNodes(project=project, id_on_tree=node_cnt, node_type=node_type)
     return project_node.id
 
+def delete_node(project_id, id_on_tree):
+    # delete from tree in memory
+    root_id = Project.objects.get(id=project_id).root_id
+    tree = get_tree(root_id)[0]
+    tree.children.remove(id_on_tree)
+    # delete from db
+    node = ProjectNodes.objects.filter(project_id=project_id, id_on_tree=id_on_tree).first().delete()
+    return node
+
+def move_node(node_alter, node_connect, ref_type):
+    tree = get_tree(node_alter.Project.root_id)[0]
+    tree.children.remove(node_alter.id_on_tree)
+    return node_join(node_alter, node_connect, ref_type)
 
 def node_join(node_a, node_b, ref_type):
     tree = get_tree(node_a.project.root_id)[0]

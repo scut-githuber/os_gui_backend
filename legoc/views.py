@@ -58,6 +58,19 @@ def create_node(request, root_id, node_type):
     ret = tree.new_node(root_id, node_type)
     return HttpResponse(json_helper.dump_err_msg(0, ret))
 
+@csrf_exempt
+def remove_node(request, project_id, id_on_tree):
+    ret = tree.delete_node(project_id, id_on_tree)
+    return HttpResponse(json_helper.dump_err_msg(0, ret))
+
+@csrf_exempt
+def alter_node(request, node_id_alter, node_id_connect, ref_type):
+    ret, node_alter, node_connect = tree.ref_valid(node_id_alter, node_id_connect, ref_type)
+    if ret:
+        tree.move_node(node_alter, node_connect, ref_type)
+        return HttpResponse(json_helper.dump_err_msg(0, 'success'))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(-1, 'not exist or unable to connect with another node'))
 
 @csrf_exempt
 def new_project(request, name, root_type, user_id):
